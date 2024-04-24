@@ -1,0 +1,121 @@
+#function to calculate triangular values
+def triangular(x,l,c,r):
+  if l<x<=c:
+    return (x-l)/(c-l)
+  elif c<x<=r:
+    return(r-x)/(r-c)
+  else:
+   return 0
+
+# Define temperature categories and their values
+
+temperature_categories = {
+    "low": [-5, 10, 25],
+    "below average": [15, 30, 45],
+    "average": [40, 50, 60],
+    "above average": [55, 70, 85],
+    "high": [75, 90, 105]
+}
+
+# Define pressure categories and their values
+
+pressure_categories = {
+    "low": [0.25, 1, 1.75],
+    "below average": [1.25, 2, 2.75],
+    "average": [2, 3, 4],
+    "above average": [3.25, 4, 4.75],
+    "high": [4.25, 4.625, 5]
+}
+
+# Define heating power categories and their values
+heating_power_categories = {
+    "low": [0.25, 1, 1.75],
+    "below average": [1.25, 2, 2.75],
+    "average": [2, 3, 4],
+    "above average": [3.25, 4, 4.75],
+    "high": [4.25, 5, 5.75]
+}
+
+
+
+# Define valve opening categories and their values
+valve_opening_categories = {
+    "low": [0.25, 1, 1.75],
+    "below average": [1.25, 2, 2.75],
+    "average": [2, 3, 4],
+    "above average": [3.25, 4, 4.75],
+    "high": [4.25, 5, 5.75]
+}
+
+
+# Rule 1: Temperature below average, Pressure below average
+t_category_rule1 = "below average"
+p_category_rule1 = "below average"
+heating_power_rule1 = "above average"
+valve_opening_rule1 = "below average"
+
+
+# Rule 2: Temperature low, Pressure low
+t_category_rule2 = "low"
+p_category_rule2 = "low"
+heating_power_rule2 = "low"
+valve_opening_rule2 = "high"
+
+# Input values for temperature and pressure
+t = float(input("Enter the temperature value: "))
+p = float(input("Enter the pressure value: "))
+
+
+# Fetching values for temperature and pressure categories for Rule 1
+t_values_rule1 = temperature_categories.get(t_category_rule1)
+p_values_rule1 = pressure_categories.get(p_category_rule1)
+
+# Calculate membership values for temperature and pressure for Rule 1
+temperature_membership_rule1 = triangular(t, *t_values_rule1)
+pressure_membership_rule1 = triangular(p, *p_values_rule1)
+
+# Calculate minimum membership value for Rule 1
+z1 = min(temperature_membership_rule1, pressure_membership_rule1)
+print(f"Membership value for temperature for Rule 1: {temperature_membership_rule1}")
+print(f"Membership value for pressure for Rule 1: {pressure_membership_rule1}")
+print(f"z1: {z1}")
+
+# Fetching values for temperature and pressure categories for Rule 2
+t_values_rule2 = temperature_categories.get(t_category_rule2)
+p_values_rule2 = pressure_categories.get(p_category_rule2)
+
+# Calculate membership values for temperature and pressure for Rule 2
+temperature_membership_rule2 = triangular(t, *t_values_rule2)
+pressure_membership_rule2 = triangular(p, *p_values_rule2)
+
+# Calculate minimum membership value for Rule 2
+z2 = min(temperature_membership_rule2, pressure_membership_rule2)
+print(f"Membership value for temperature for Rule 2: {temperature_membership_rule2}")
+print(f"Membership value for pressure for Rule 2: {pressure_membership_rule2}")
+print(f"z2: {z2}")
+
+
+# Calculate the defuzzified value for heating power
+
+defuzz_heating_power = (
+(z1 * 0.5 * (heating_power_categories[heating_power_rule1][2] - heating_power_categories[heating_power_rule1][0]) *
+heating_power_categories[heating_power_rule1][1]) +
+(z2 * 0.5 * (heating_power_categories[heating_power_rule2][2] - heating_power_categories[heating_power_rule2][0]) *
+heating_power_categories[heating_power_rule2][1]) ) / (
+    (z1 * 0.5 * (heating_power_categories[heating_power_rule1][2] - heating_power_categories[heating_power_rule1][0])) +
+     (z2 * 0.5 * (heating_power_categories[heating_power_rule2][2] - heating_power_categories[heating_power_rule2][0])) )
+
+
+
+print(f"Defuzzified value for heating power: {defuzz_heating_power}")
+# Calculate the defuzzified value for valve opening
+
+defuzz_valve_opening = (
+(z1 * 0.5 * (valve_opening_categories[valve_opening_rule1][2] - valve_opening_categories[valve_opening_rule1][0]) *
+(valve_opening_categories[valve_opening_rule1][1]))  +
+(z2 * 0.5 * (valve_opening_categories[valve_opening_rule2][2] - valve_opening_categories[valve_opening_rule2][0]) *
+(valve_opening_categories[valve_opening_rule2][1] )) ) / (
+(z1 * 0.5 * (valve_opening_categories[valve_opening_rule1][2] - valve_opening_categories[valve_opening_rule1][0])) +
+(z2 * 0.5 * (valve_opening_categories[valve_opening_rule2][2] - valve_opening_categories[valve_opening_rule2][0])) )
+
+print(f"Defuzzified value for valve opening: {defuzz_valve_opening}")
